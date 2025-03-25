@@ -1,4 +1,4 @@
-package mx.nach.price.service;
+package mx.nach.product.service;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -6,11 +6,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@OpenAPIDefinition(info = @Info(title = "Price Service API", version = "1.0", description = "Gestión de precios de productos"))
-public class PriceServiceApplication {
+@OpenAPIDefinition(info = @Info(title = "Product Service API", version = "1.0", description = "Gestión de productos"))
+public class ProductServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(PriceServiceApplication.class, args);
+		SpringApplication.run(ProductServiceApplication.class, args);
 	}
 
 }
