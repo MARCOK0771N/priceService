@@ -4,14 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
-public class Product {
-    private Long id;
-    private String name;
-    private String description;
+@Builder
+public class AuthenticationRequest {
+
+    private String username;
+    private String password;
 }

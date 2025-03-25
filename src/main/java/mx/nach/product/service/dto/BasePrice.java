@@ -7,11 +7,12 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Data
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
-public class Product {
-    private Long id;
-    private String name;
-    private String description;
+public class BasePrice {
+
+    private Double amount;
+    private String currency;
+
 }

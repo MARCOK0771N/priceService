@@ -1,13 +1,4 @@
 spring:
-  h2:
-    console:
-      enabled: true
-      path: /h2
-  datasource:
-    url: jdbc:h2:file:~/test
-    username: sa
-    password:
-    driverClassName: org.h2.Driver
   jpa:
     generate-ddl: true
     hibernate:
@@ -17,23 +8,24 @@ spring:
         format_sql: true
   sql:
     init:
-      mode: never
+      mode: ALWAYS
 #logging:
 #  level:
 #    ROOT: debug
 #    org.springframework.web: DEBUG
 #    org.hibernate: DEBUG
 server:
-  port: 8443
-#  ssl:
-#    key-store: classpath:keystore.p12
-#    key-store-password: changeit
-#    key-store-type: PKCS12
-#    key-alias: selfsigned
-
-#spring:
-#  security:
-#    oauth2:
-#      resource-server:
-#        jwt:
-#          issuer-uri: "http://localhost:8080"
+  port: 8081
+  #  ssl:
+  #    key-store: classpath:keystore.jks
+  #    key-store-password: changeit
+  #    key-store-type: JKS
+  #    key-alias: myalias
+  #    key-password: changeit
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: basic

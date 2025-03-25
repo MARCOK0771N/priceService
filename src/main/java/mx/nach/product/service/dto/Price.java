@@ -1,17 +1,18 @@
 package mx.nach.product.service.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
-public class Product {
+public class Price extends BasePrice{
+
     private Long id;
-    private String name;
-    private String description;
+    private Long productId;
 }

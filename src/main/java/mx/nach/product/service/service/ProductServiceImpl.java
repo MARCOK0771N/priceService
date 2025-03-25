@@ -3,8 +3,12 @@ package mx.nach.product.service.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import mx.nach.product.service.dto.BasePrice;
+import mx.nach.product.service.dto.Price;
 import mx.nach.product.service.dto.Product;
+import mx.nach.product.service.dto.ProductPrice;
 import mx.nach.product.service.entity.ProductEntity;
+import mx.nach.product.service.feign.PriceServiceFeign;
 import mx.nach.product.service.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,14 +24,19 @@ public class ProductServiceImpl implements  ProductService {
 
     private final ProductRepository productRepository;
 
+    private final PriceServiceFeign priceServiceFeign;
+
     @Override
     public List<Product> getAllProducts() {
         return productRepository.findAll().stream().map(this::toProduct).toList();
     }
 
     @Override
-    public Optional<Product> getProductById(Long id) {
-        return productRepository.findById(id).map(this::toProduct);
+    public Optional<ProductPrice> getProductById(Long id) {
+
+        BasePrice basePrice = Optional.ofNullable(priceServiceFeign.getPriceByProductId(id)).map(this::toBasePrice).orElseThrow(()-> new RuntimeException("price not found"));
+
+        return productRepository.findById(id).map(product-> toProductPrice(product,basePrice));
     }
 
     @Override
@@ -62,4 +71,19 @@ public class ProductServiceImpl implements  ProductService {
                 .build();
     }
 
+    public BasePrice toBasePrice(Price price){
+        return BasePrice.builder()
+                .amount(price.getAmount())
+                .currency(price.getCurrency())
+                .build();
+    }
+
+    public ProductPrice toProductPrice(ProductEntity product, BasePrice basePrice){
+        return ProductPrice.builder()
+                .id(product.getId())
+                .description(product.getDescription())
+                .name(product.getName())
+                .price(basePrice)
+                .build();
+    }
 }
