@@ -1,45 +1,29 @@
-//package mx.nach.price.service.config;
-//
-//
-//import org.springframework.context.annotation.Bean;
-//import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-//import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-//import org.springframework.security.oauth2.jwt.JwtDecoder;
-//import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
-//import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-//import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
-//import org.springframework.security.web.SecurityFilterChain;
-//
-//import java.security.interfaces.RSAPublicKey;
-//
-//@EnableWebSecurity
-//public class SecurityConfig {
-//
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        return http.csrf().disable()
-//                .authorizeRequests()
-//                .antMatchers("/api/prices/**").authenticated()
-//                .anyRequest().permitAll()
-//                .and().oauth2ResourceServer().jwt()
-//                .jwtAuthenticationConverter(jwtAuthenticationConverter())
-//                .and().and().build();
-//    }
-//
-//    @Bean
-//    public JwtDecoder jwtDecoder() {
-//        return NimbusJwtDecoder.withPublicKey((RSAPublicKey) SecurityKeys.getPublicKey()).build();
-//    }
-//
-//    @Bean
-//    public JwtAuthenticationConverter jwtAuthenticationConverter() {
-//        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-//        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
-//        grantedAuthoritiesConverter.setAuthoritiesClaimName("roles");
-//
-//        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-//        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
-//
-//        return jwtAuthenticationConverter;
-//    }
-//}
+package mx.nach.price.service.config;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig{
+
+    @Autowired
+    private JwtRequestFilter jwtRequestFilter;
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http.csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/generateToken").permitAll())
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/**").authenticated())
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/admin/**").authenticated())
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
+    }
+}
